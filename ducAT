@@ -1,0 +1,55 @@
+#define F_CPU 16000000UL
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/sfr_defs.h>
+unsigned char led[12]={0xC0,0xF9,0xA4,0xB0,0x99,0X92,0X82,0XF8,0X80,0X90,0X9C,0XC6};
+	int A;
+void hienthi(int x)	
+{
+	uint16_t temp, dv, ch;
+	temp=x;
+	dv=temp%10;
+	temp=temp/10;
+	ch =temp;
+	for(int i=0;i<20;i++)
+	{
+		PORTD=0b00000000;
+		PORTD=(1<<PIND0);
+		PORTC=led[ch];
+		_delay_ms(2);
+		PORTD=0b00000000;
+		PORTD=(1<<PIND0);
+		PORTC=led[dv];
+		_delay_ms(2);
+		PORTD=0b00000000;
+		PORTD=(1<<PIND0);
+		PORTC=led[10];
+		_delay_ms(2);
+		PORTD=0b00000000;
+		PORTD=(1<<PIND0);
+		PORTC=led[11];
+		_delay_ms(2);
+	}
+}
+uint16_t read_adc(unsigned kenh_adc)
+	{
+		ADMUX=kenh_adc|(1<<RESF0);
+		ADCSRA|=(1<<ADCSRA);
+		loop_until_bit_is_set(ADCSRA,ADIF);
+		return ADCW;
+	}
+
+int main(void)
+{
+	ADMUX |=(1<<REFS0);
+	ADCSRA |=(1<<ADEN)|(1<<ADPS1)|(1<<ADPS0);
+	DDRC=0XFF;
+	DDRD=(1<<PIND0)|(1<<PIND1)|(1<<PIND2)|(1<<PIND3);
+	
+    
+    while (1) 
+    {
+		A=(int )(read_adc(0)/3.41);
+		hienthi(abc_val);
+    }
+}
